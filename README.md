@@ -1,4 +1,4 @@
-# pubnub-channelgroup-example
+# pubnub-channelgroup-example 
 [![Build Status](https://travis-ci.org/gregwhitaker/pubnub-channelgroup-example.svg?branch=master)](https://travis-ci.org/gregwhitaker/pubnub-channelgroup-example)
 
 Example of using [PubNub](http://www.pubnub.com) Channel Groups.
