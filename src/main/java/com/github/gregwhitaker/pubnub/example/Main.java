@@ -4,8 +4,10 @@ import com.github.gregwhitaker.pubnub.example.publishers.CpuMetricsPublisher;
 import com.github.gregwhitaker.pubnub.example.publishers.MemoryMetricsPublisher;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.channel_group.PNChannelGroupsAddChannelResult;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import org.slf4j.Logger;
@@ -36,6 +38,13 @@ public class Main {
             throw new IllegalArgumentException("System property 'publishKey' is required!");
         }
 
+        // Create PubNub configuration
+        PNConfiguration pnConfiguration = new PNConfiguration();
+        pnConfiguration.setSubscribeKey(subscribeKey);
+        pnConfiguration.setPublishKey(publishKey);
+
+        PubNub pubnub = new PubNub(pnConfiguration);
+
         LOG.info("Creating metrics publishers...");
 
         // Create metrics publishers
@@ -48,14 +57,20 @@ public class Main {
         EXECUTOR.submit(cpuPublisher);
         EXECUTOR.submit(memoryPublisher);
 
-        // Create PubNub configuration
-        PNConfiguration pnConfiguration = new PNConfiguration();
-        pnConfiguration.setSubscribeKey(subscribeKey);
-        pnConfiguration.setPublishKey(publishKey);
+        pubnub.addChannelsToChannelGroup()
+                .channels(Arrays.asList("metrics_cpu", "metrics_memory"))
+                .channelGroup("metrics")
+                .async(new PNCallback<PNChannelGroupsAddChannelResult>() {
+                    @Override
+                    public void onResponse(PNChannelGroupsAddChannelResult result, PNStatus status) {
+                        if (status.isError()) {
+                            LOG.error(status.getErrorData().getThrowable().getMessage(),
+                                    status.getErrorData().getThrowable());
+                        }
+                    }
+                });
 
-        PubNub pubnub = new PubNub(pnConfiguration);
-
-        // Create listener for the "metrics.*" channel group
+        // Create listener for the "metrics" channel group
         pubnub.addListener(new SubscribeCallback() {
             @Override
             public void status(PubNub pubnub, PNStatus status) {
@@ -66,7 +81,8 @@ public class Main {
 
             @Override
             public void message(PubNub pubnub, PNMessageResult message) {
-
+                String type = message.getMessage().getAsJsonObject().get("type").getAsString();
+                System.out.println(type);
             }
 
             @Override
@@ -75,11 +91,11 @@ public class Main {
             }
         });
 
-        LOG.info("Subscribing to 'metrics.*' channel group...");
+        LOG.info("Subscribing to 'metrics' channel group...");
 
         // Subscribe to the "metrics.*" channel group
         pubnub.subscribe()
-                .channelGroups(Arrays.asList("metrics.*"))
+                .channelGroups(Arrays.asList("metrics"))
                 .execute();
     }
 }

@@ -44,7 +44,7 @@ public class MemoryMetricsPublisher implements Runnable {
 
             // Publish the metric to PubNub
             pubNub.publish()
-                    .channel("metrics.memory")
+                    .channel("metrics_memory")
                     .message(message)
                     .async(new PNCallback<PNPublishResult>() {
                         @Override

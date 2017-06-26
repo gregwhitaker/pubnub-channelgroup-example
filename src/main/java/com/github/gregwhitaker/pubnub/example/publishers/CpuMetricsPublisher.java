@@ -42,7 +42,7 @@ public class CpuMetricsPublisher implements Runnable {
 
             // Publish the metric to PubNub
             pubNub.publish()
-                    .channel("metrics.cpu")
+                    .channel("metrics_cpu")
                     .message(message)
                     .async(new PNCallback<PNPublishResult>() {
                         @Override
