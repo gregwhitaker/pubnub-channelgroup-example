@@ -72,6 +72,10 @@ public class Main {
 
         // Create listener for the "metrics" channel group
         pubnub.addListener(new SubscribeCallback() {
+            Double cpuPercentage = 0.0;
+            Long totalMemory = 0L;
+            Long freeMemory = 0L;
+
             @Override
             public void status(PubNub pubnub, PNStatus status) {
                 if (status.isError()) {
@@ -82,7 +86,15 @@ public class Main {
             @Override
             public void message(PubNub pubnub, PNMessageResult message) {
                 String type = message.getMessage().getAsJsonObject().get("type").getAsString();
-                System.out.println(type);
+
+                if (type.equalsIgnoreCase("cpu")) {
+                    cpuPercentage = message.getMessage().getAsJsonObject().get("cpuPercentage").getAsDouble();
+                } else if (type.equalsIgnoreCase("memory")) {
+                    totalMemory = message.getMessage().getAsJsonObject().get("totalMemory").getAsLong();
+                    freeMemory = message.getMessage().getAsJsonObject().get("freeMemory").getAsLong();
+                }
+
+                LOG.info("CPU: {}, Total Memory: {}, Free Memory: {}", cpuPercentage, totalMemory, freeMemory);
             }
 
             @Override

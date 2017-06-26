@@ -39,8 +39,8 @@ public class MemoryMetricsPublisher implements Runnable {
 
             JsonObject message = new JsonObject();
             message.addProperty("type", "memory");
-            message.addProperty("totalMemoryValue", totalMemory);
-            message.addProperty("freeMemoryValue", freeMemory);
+            message.addProperty("totalMemory", totalMemory);
+            message.addProperty("freeMemory", freeMemory);
 
             // Publish the metric to PubNub
             pubNub.publish()
