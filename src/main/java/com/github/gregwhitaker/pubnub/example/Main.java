@@ -59,7 +59,9 @@ public class Main {
         pubnub.addListener(new SubscribeCallback() {
             @Override
             public void status(PubNub pubnub, PNStatus status) {
-
+                if (status.isError()) {
+                    LOG.error(status.getErrorData().getInformation());
+                }
             }
 
             @Override
@@ -69,7 +71,7 @@ public class Main {
 
             @Override
             public void presence(PubNub pubnub, PNPresenceEventResult presence) {
-
+                //Noop
             }
         });
 
