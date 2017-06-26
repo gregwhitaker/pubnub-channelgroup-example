@@ -4,7 +4,8 @@
 Example of using [PubNub](http://www.pubnub.com) Channel Groups.
 
 This example creates two publishers each with their own channel.  One publisher sends CPU usage metrics and the other
-sends memory usage metrics.  Both channels are members of a single "metrics" channel group that aggregates the channels.
+sends memory usage metrics.  Both channels are members of a single "metrics" channel group that aggregates the channels.  The metrics
+channel group is subscribed to and logged to the console.
 
 ## Prerequisites
 This example requires that you create a PubNub account.  Using the account you will need 
