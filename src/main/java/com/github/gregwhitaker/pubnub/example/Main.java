@@ -105,7 +105,7 @@ public class Main {
 
         LOG.info("Subscribing to 'metrics' channel group...");
 
-        // Subscribe to the "metrics.*" channel group
+        // Subscribe to the "metrics" channel group
         pubnub.subscribe()
                 .channelGroups(Arrays.asList("metrics"))
                 .execute();
