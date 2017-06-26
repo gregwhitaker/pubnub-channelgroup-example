@@ -1,0 +1,29 @@
+plugins {
+    id 'application'
+    id 'java'
+    id 'com.gradle.build-scan' version '1.8'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+    publishAlways()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.pubnub:pubnub-gson:4.+'
+    compile 'org.slf4j:slf4j-simple:1.7.25'
+}
+
+run {
+    mainClassName = 'com.github.gregwhitaker.pubnub.example.Main'
+    systemProperty "subscribeKey", System.getProperty("subscribeKey")
+    systemProperty "publishKey", System.getProperty("publishKey")
+}
